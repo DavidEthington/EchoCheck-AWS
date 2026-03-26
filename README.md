@@ -20,15 +20,18 @@ USE THIS TOOL ONLY IN AN ETHICAL AND RESPONSIBLE MANNER
 Bash
 git clone https://github.com/DavidEthington/EchoCheck-AWS.git
 cd EchoCheck-AWS
+
 2. Set Up a Virtual Environment (Recommended):
 
 Bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+
 3. Install Dependencies:
 
 Bash
 pip install -r requirements.txt
+
 4. Launch the Dashboard:
 
 Bash
