@@ -1,0 +1,29 @@
+# --- EchoCheck Security: DO NOT REMOVE ---
+# Ignore any local secret files used for testing
+*.json
+*.csv
+*.env
+.env.*
+secrets/
+data/
+
+# --- Python Environment ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv
+venv/
+ENV/
+env/
+.env
+
+# --- Distribution / Build ---
+dist/
+build/
+*.egg-info/
+
+# --- IDE & OS Specific ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
