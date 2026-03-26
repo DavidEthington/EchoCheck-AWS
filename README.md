@@ -12,3 +12,5 @@ Active Validation: Uses boto3 to check the "heartbeat" of credentials via get-ca
 Risk Quantification: Extracts Account IDs, ARNs, and basic permission levels.
 
 Visual Dashboard: Streamlit-powered UI for real-time audit review.
+
+USE THIS TOOL ONLY IN AN ETHICAL AND RESPONSIBLE MANNER
