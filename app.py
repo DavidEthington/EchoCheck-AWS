@@ -1,39 +1,30 @@
 import streamlit as st
 import pandas as pd
-from engine import EchoCheckEngine  # This imports the logic we just built
-from loader import load_secrets      # This imports your JSON/ENV loader
+from dispatcher import run_bulk_nxc
 
-st.set_page_config(page_title="EchoCheck AWS", layout="wide")
+st.set_page_config(page_title="EchoCheck-nxc", layout="wide")
+st.title("📡 EchoCheck: Cloud Credential Sprayer")
 
-st.title("📡 EchoCheck AWS")
-st.subheader("Credential Validation & Exposure Dashboard")
+# Sidebar for Input (The "nxc -u" equivalent)
+raw_input = st.sidebar.text_area("Paste Keys (Format: KEY:SECRET)", height=200)
 
-# 1. Sidebar for File Upload
-uploaded_file = st.sidebar.file_uploader("Upload Secrets (JSON, CSV, ENV)", type=['json', 'csv', 'env'])
+if st.sidebar.button("🚀 Spray Credentials"):
+    # Parse the input
+    secrets = []
+    for line in raw_input.split('\n'):
+        if ":" in line:
+            k, s = line.split(":", 1)
+            secrets.append({"key": k.strip(), "secret": s.strip()})
 
-if uploaded_file:
-    # Save temp file or process directly
-    secrets_list = load_secrets(uploaded_file) 
-    results = []
+    if secrets:
+        with st.spinner(f"Spraying {len(secrets)} credentials..."):
+            data = run_bulk_nxc(secrets)
+            df = pd.DataFrame(data)
 
-    st.info(f"Loaded {len(secrets_list)} potential secrets. Validating...")
+            # The Visual "Pwn" Representation
+            def highlight_pwn(val):
+                if val == "Pwned": return 'background-color: #ff4b4b; color: white'
+                if val == "Active": return 'background-color: #ffa500'
+                return ''
 
-    # 2. Run the Engine for each secret
-    for secret in secrets_list:
-        engine = EchoCheckEngine(secret['access_key'], secret['secret_key'])
-        data = engine.validate_and_enrich()
-        results.append(data)
-
-    # 3. Display the Results in a Dataframe
-    df = pd.DataFrame(results)
-    
-    # Color-coding the Status column
-    def color_status(val):
-        color = 'green' if val == 'Active' else 'red'
-        return f'color: {color}'
-
-    st.dataframe(df.style.applymap(color_status, subset=['status']))
-
-    # 4. Summary Metrics
-    active_count = len(df[df['status'] == 'Active'])
-    st.sidebar.metric("Active Leaks Found", active_count, delta_color="inverse")
+            st.table(df.style.applymap(highlight_pwn, subset=['s3_access']))
